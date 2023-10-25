@@ -1,13 +1,66 @@
 apply plugin: 'java'
 
+
+// 定义一个仓库来使用依赖
 repositories {
+    // http://repo1.maven.org/
     mavenCentral()
 }
 
+/*
+在 Gradle 中，除了 `implementation`，还有以下几种常用的依赖配置参数²⁴：
+
+1. **`api`**：这是 `java-library` 插件提供的一个依赖配置。与 `implementation` 不同，被 `api` 声明的依赖不仅会出现在编译类路径中，还会出现在公共 API 中，因此会被暴露给编译该库的任何消费者²。
+
+2. **`compileOnly`**：这个依赖配置用于添加只在编译时需要的依赖，比如你可能只需要在编译时使用某个注解处理器，而不需要将其包含在最终的打包文件中²。
+
+3. **`runtimeOnly`**：这个依赖配置用于添加只在运行时需要的依赖。这些依赖在编译时不会被包含在类路径中，但会被包含在运行时类路径以及最终的打包文件中²。
+
+4. **`annotationProcessor`**：这个依赖配置用于添加注解处理器。这些处理器在编译时会被调用，以处理源代码中的注解²。
+
+以上就是 Gradle 中常用的一些依赖配置参数。具体使用哪种参数，取决于你的具体需求和项目类型。更多关于 Gradle 依赖配置的信息，你可以参考 [Gradle 用户手册](^2^)。
+
+Source: Conversation with Bing, 2023/10/24
+(1) Declaring dependencies - Gradle User Manual. https://docs.gradle.org/current/userguide/declaring_dependencies.html.
+(2) Gradle依赖之‘五种依赖配置’ - 知乎 - 知乎专栏. https://zhuanlan.zhihu.com/p/110215979.
+(3) Declaring dependencies - Gradle User Manual. https://docs.gradle.org/current/userguide/declaring_dependencies.html.
+(4) 【Gradle7.0】依赖统一管理的全新方式，了解一下~ - 掘金. https://juejin.cn/post/6997396071055900680.
+(5) gradle中如何引入依赖_gradle如何引入依赖-CSDN博客. https://blog.csdn.net/qq_41378597/article/details/102714562.
+(6) undefined. https://mvnrepository.com/.
+* */
+
 dependencies {
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
+    implementation 'org.apache.commons:commons-lang3:3.1'
 }
 
+/*
+`apply plugin: 'application'` 这行代码是在 Gradle 构建脚本中应用 `application` 插件¹²⁴。`application` 插件是 Gradle 的一个内置插件，它可以帮助你创建一个可执行的 JVM 应用程序¹²⁴。
+
+这个插件提供了一些功能，包括¹²：
+- **运行应用程序**：你可以使用 `gradle run` 命令来启动应用程序。这个命令会编译你的代码，然后使用指定的主类启动一个新的 JVM 实例¹。
+- **打包应用程序**：你可以使用 `gradle assemble` 命令来生成一个包含了你的应用程序和所有运行时依赖的 TAR 或 ZIP 文件¹。这个文件还会包含一些用于启动应用程序的操作系统特定的启动脚本¹。
+
+要使用 `application` 插件，你需要在 `build.gradle` 文件中指定你的应用程序的主类¹²。例如：
+
+```groovy
+application {
+    mainClass = 'com.example.Main'
+}
+```
+
+在这个例子中，`com.example.Main` 就是你的应用程序的主类。当你运行 `gradle run` 命令时，Gradle 就会执行这个类的 `main` 方法¹²。
+
+以上就是 `apply plugin: 'application'` 这行代码的基本介绍。如果你想了解更多关于 `application` 插件的信息，你可以参考 [Gradle 用户手册](^1^)。
+
+Source: Conversation with Bing, 2023/10/24
+(1) The Application Plugin - Gradle User Manual. https://docs.gradle.org/current/userguide/application_plugin.html.
+(2) gradle Application插件-CSDN博客. https://blog.csdn.net/wang2leee/article/details/132388417.
+(3) Gradle第12课：Gradle 中常用插件的介绍-上 - 知乎. https://zhuanlan.zhihu.com/p/112294683.
+(4) The Application Plugin - Gradle User Manual. https://docs.gradle.org/current/userguide/application_plugin.html.
+(5) 第四十五章. 应用程序插件 - Chapter 45. The Application Plugin. http://gradledoc.githang.com/2.0/userguide/application_plugin.html.
+(6) undefined. https://bbs.csdn.net/topics/617243532?utm_source=blogger_star_comment.
+(7) undefined. https://blogdev.blog.csdn.net/article/details/129986459?utm_source=blogger_star_comment.
+* */
 // Run application with "application" plugin
 apply plugin: 'application'
 mainClassName = 'com.manning.gia.todo.ToDoApp'
@@ -16,10 +69,67 @@ run {
     standardInput = System.in
 }
 
+/*
+`task runWithJavaExec(type: JavaExec)` 这行代码是在 Gradle 构建脚本中定义了一个名为 `runWithJavaExec` 的任务，这个任务的类型是 `JavaExec`¹⁴。
+
+`JavaExec` 是 Gradle 的一个任务类型，它可以用来执行一个 Java 应用程序¹。这个任务会启动一个新的 JVM 进程，然后在这个进程中运行指定的主类¹。
+
+你可以在 `runWithJavaExec` 任务中配置一些参数，比如类路径（`classpath`）、主类（`mainClass`）和应用程序参数（`args`）¹。例如：
+
+```groovy
+task runWithJavaExec(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.example.Main'
+    args 'appArg1'
+}
+```
+
+在这个例子中，`sourceSets.main.runtimeClasspath` 是应用程序的类路径，`'com.example.Main'` 是应用程序的主类，`'appArg1'` 是传递给应用程序的参数¹。
+
+你可以通过运行 `gradle runWithJavaExec` 命令来执行这个任务⁴。如果你的项目已经包含了 `gradlew` 脚本，那么你可以直接在命令行中运行这个命令。如果没有包含的话，你需要先安装 Gradle，然后使用 `gradle runWithJavaExec` 命令。
+
+以上就是 `task runWithJavaExec(type: JavaExec)` 这行代码的基本介绍。如果你想了解更多关于 `JavaExec` 任务的信息，你可以参考 [Gradle 用户手册](^1^)。
+
+Source: Conversation with Bing, 2023/10/24
+(1) JavaExec - Gradle DSL Version 8.4 - Gradle User Manual. https://docs.gradle.org/current/dsl/org.gradle.api.tasks.JavaExec.html.
+(2) Gradle 运行Java Main 类 - wei2cai - 博客园. https://www.cnblogs.com/wei2cai/articles/17009676.html.
+(3) JavaExec - Gradle DSL Version 8.4 - Gradle User Manual. https://docs.gradle.org/current/dsl/org.gradle.api.tasks.JavaExec.html.
+(4) In gradle, what is the difference betweeen javaexec and a JavaExec task .... https://stackoverflow.com/questions/66554637/in-gradle-what-is-the-difference-betweeen-javaexec-and-a-javaexec-task.
+(5) java - Kotlin dsl gradle，如何使用自定义任务调用和执行 .kt 内的函数 - IT工具网. https://bing.com/search?q=Gradle+JavaExec+%e4%bb%bb%e5%8a%a1.
+(6) java - Kotlin dsl gradle，如何使用自定义任务调用和执行 .kt 内的函数 - IT工具网. https://www.coder.work/article/6202904.
+(7) gradle task 调用另外的 task - 简书. https://www.jianshu.com/p/358f89a0eca5.
+ */
 // Run application with JavaExec task
 task runWithJavaExec(type: JavaExec) {
+
+    /*
+    这段代码是在 Gradle 构建脚本中定义了一个任务，该任务依赖于 `classes` 任务¹²⁴。这里的 `classes` 任务通常是由 Java 插件添加的，它负责编译项目的主源集⁴。
+- `classpath configurations.runtime, sourceSets.main.output.classesDir`：这行代码设置了运行 Java 程序时的类路径⁶⁷[^10^]。
+`configurations.runtime` 是运行时依赖的类路径⁶⁷，`
+sourceSets.main.output.classesDir` 是主源集编译后的类文件的输出目录⁹[^10^]¹³。
+但是需要注意的是，从 Gradle 4 开始，`sourceSets.main.output.classesDir` 已经被弃用，建议使用 `sourceSets.main.output.classesDirs`¹²。
+- `main = 'com.manning.gia.todo.ToDoApp'`：这行代码指定了要运行的 Java 程序的主类¹⁴¹⁵。
+- `standardInput = System.in`：这行代码将 Java 程序的标准输入流设置为 `System.in`¹⁷¹⁸¹⁹。这意味着你可以在命令行中输入数据，然后这些数据会被 Java 程序读取。
+    * */
+
+    /*
+* What went wrong:
+A problem occurred evaluating root project 'todo-app-external-dependency'.
+> Could not get unknown property 'runtime' for configuration container of type org.gradle.api.internal.artifacts.configurations.DefaultConfigurationContainer.
+
+这个错误是因为在 Gradle 7 中，`runtime` 配置已经被移除¹²。从 Gradle 6.x 开始，`configurations.runtime` 已经不再被支持¹²。取而代之的是 `configurations.runtimeClasspath`¹²。
+
+所以，你应该将 `configurations.runtime` 替换为 `configurations.runtimeClasspath`¹²。例如：
+
+```groovy
+task copyAllDependencies(type: Copy) {
+    from configurations.runtimeClasspath
+    into "${buildDir}/output/libs"
+}
+```
+    * */
     dependsOn classes
-    classpath configurations.runtime, sourceSets.main.output.classesDir
+    classpath configurations.runtimeClasspath, sourceSets.main.output.classesDirs
     main = 'com.manning.gia.todo.ToDoApp'
     standardInput = System.in
 }

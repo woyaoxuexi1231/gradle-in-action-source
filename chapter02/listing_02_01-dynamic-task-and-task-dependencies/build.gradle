@@ -1,4 +1,4 @@
-task startSession << {
+task startSession  {
     chant()
 }
 
@@ -7,8 +7,8 @@ def chant() {
 }
 
 3.times {
-    task "yayGradle$it" << {
-        println 'Gradle rocks'
+    task "yayGradle$it" {
+        println "Gradle rocks$it"
     }
 }
 
